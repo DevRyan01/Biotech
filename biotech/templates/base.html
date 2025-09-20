@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Biotech{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/telainicial.css' %}">
+</head>
+<body class="flex h-screen bg-gray-100">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 text-white flex flex-col">
+        <div class="p-6 text-center border-b border-blue-500">
+            <h1 class="text-2xl font-bold">BIOTECH</h1>
+        </div>
+        
+        <div class="flex-1 p-4">
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold mb-4">Sistema de Análise</h2>
+                <p class="text-sm text-blue-200 mb-4">
+                    Plataforma especializada em detecção de bactérias através de análise de imagens.
+                </p>
+            </div>
+            
+            <div class="mb-8">
+                <button class="w-full text-left py-2 px-4 hover:bg-blue-500 rounded-lg">
+                    Sobre Nós
+                </button>
+            </div>
+        </div>
+             
+        <div class="p-4 text-center text-sm text-blue-200">
+            &copy; 2025 Biotech
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content flex-1 overflow-y-auto p-8">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="{% static 'js/telainicial.js' %}"></script>
+</body>
+</html>
