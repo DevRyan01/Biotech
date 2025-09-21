@@ -280,7 +280,7 @@ pyrightconfig.json
 .history
 .ionide
 
-package.json
+
 package-lock.json
 
 #tailwind
@@ -293,3 +293,5 @@ node_modules
 *.sqlite
 *.sqlite3
 **/__pycache__/
+*.env
+*.md

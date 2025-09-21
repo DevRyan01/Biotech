@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% block content %}
+    
+  <div class="d-flex">
+       <!-- Conteúdo principal -->
+    <div class="flex-grow-1 p-4">
+      <div class="row justify-content-center my-5">
+        <!-- Gráfico de Barras -->
+        <div class="col-md-5 text-center">
+          <canvas id="graficoBarra"></canvas>
+          <h5 class="mt-3">Análise de Gráfico Mensal</h5>
+          <p>Este gráfico mostra as análises feitas mensalmente.</p>
+        </div>
+
+        <!-- Gráfico de Pizza -->
+        <div class="col-md-5 text-center">
+          <canvas id="graficoPizza"></canvas>
+          <h5 class="mt-3">Parasitas Mais Comuns</h5>
+          <p>Este gráfico mostra os parasitas mais comuns encontrados nas amostras analisadas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Pega os dados do Django
+    const meses = {{ meses|safe }};
+    const analises = {{ analises|safe }};
+    const parasitas = {{ parasitas|safe }};
+    const valores = {{ valores|safe }};
+
+    // Gráfico de Barras
+    new Chart(document.getElementById('graficoBarra'), {
+      type: 'bar',
+      data: {
+        labels: meses,
+        datasets: [{
+          label: 'Análises',
+          data: analises,
+          backgroundColor: 'rgba(13, 110, 253, 0.7)'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    // Gráfico de Pizza
+    new Chart(document.getElementById('graficoPizza'), {
+      type: 'pie',
+      data: {
+        labels: parasitas,
+        datasets: [{
+          data: valores,
+          backgroundColor: [
+            'rgba(13, 110, 253, 0.7)',
+            'rgba(25, 135, 84, 0.7)',
+            'rgba(220, 53, 69, 0.7)'
+          ]
+        }]
+      },
+      options: { responsive: true }
+    });
+ 
+{% endblock content %}
