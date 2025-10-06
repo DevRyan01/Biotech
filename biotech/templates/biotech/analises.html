@@ -1,0 +1,191 @@
+{% extends "biotech/base.html" %} 
+{# Este template herda o layout principal definido em "base.html" #}
+
+{% load static %}
+{# Carrega as tags do Django para usar arquivos estáticos (CSS, JS, imagens, etc.) #}
+
+{% block title %}Biotech - Sistema de Análise{% endblock %}
+{# Define o título da página que aparece na aba do navegador #}
+
+{% block content %}
+{# Início do bloco de conteúdo principal que será inserido dentro de base.html #}
+
+<div class="flex h-full flex-col">
+    {# Contêiner principal flexível, organiza os elementos em coluna #}
+
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">Página Inicial</h1>
+    {# Título principal da página com estilo de texto grande e negrito #}
+
+    {# ---------------------------------------------------------------- #}
+    {# CARD PRINCIPAL: UPLOAD E BOTÕES #}
+    {# ---------------------------------------------------------------- #}
+    <div class="flex flex-col space-y-4 md:space-y-0 md:space-x-4 bg-white rounded-xl shadow-md p-6 mb-8 card">
+        {# Card principal com fundo branco, sombra, espaçamento e bordas arredondadas #}
+        <div class="w-full">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Upload da Amostra</h2>
+            {# Subtítulo do card de upload #}
+            
+            {% if not images_preview %}
+                {# Se não houver imagens selecionadas ainda, exibe o formulário de upload #}
+
+                <form action="{% url 'analises' %}" method="post" enctype="multipart/form-data">
+                    {# Formulário que envia as imagens para a view 'analises' usando método POST #}
+                    {% csrf_token %}
+                    {# Token de segurança obrigatório para formulários Django (protege contra CSRF) #}
+                    
+                    <label for="id_images" 
+                           class="upload-area border-2 border-dashed border-blue-400 rounded-lg p-6 text-center cursor-pointer hover:border-blue-600 transition duration-300 block">
+                        {# Área clicável para seleção de imagens, com borda tracejada e efeito hover #}
+                        <div class="flex flex-col items-center justify-center p-4">
+                            {# Centraliza o ícone e o texto dentro da área de upload #}
+                            <i class="fas fa-cloud-arrow-up text-blue-500 text-5xl mb-3"></i>
+                            {# Ícone de upload (usa FontAwesome) #}
+                            <p class="text-gray-700 font-medium text-lg">Clique para selecionar imagens</p>
+                            {# Texto explicativo #}
+                            <p class="text-gray-500 text-sm mt-1">Formatos suportados: JPG, PNG (Máx. 10 imagens)</p>
+                            {# Texto com os formatos aceitos e limite #}
+                        </div>
+                        
+                        <input type="file" id="id_images" name="images" 
+                               accept="image/jpeg,image/png" class="hidden" multiple onchange="this.form.submit()">
+                        {# Campo oculto de upload que aceita múltiplas imagens.  Ao selecionar, o formulário é enviado automaticamente. #}
+                    </label>
+                </form>
+                
+            {% else %}
+                {# Caso já existam imagens selecionadas, mostra o preview e opções de ação #}
+                <div class="border-2 border-blue-400 rounded-lg p-6">
+                    {# Container com borda azul e espaçamento interno #}
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+                        {# Grade de imagens (2 colunas no mobile, até 5 em telas grandes) #}
+                        <h3 class="col-span-full text-lg font-semibold text-gray-700 mb-2">Imagens Selecionadas:</h3>
+                        {# Título da seção de preview #}
+                        
+                        {% for img in images_preview %}
+                        {# Loop que percorre e exibe cada imagem selecionada #}
+                        <div class="flex flex-col items-center">
+                            <img src="{{ img.url }}" alt="{{ img.name }}" 
+                                 class="w-20 h-20 object-cover rounded-md border border-gray-300">
+                            {# Mostra o preview da imagem, ajustando tamanho e bordas #}
+                            <p class="text-xs text-gray-600 mt-1 truncate w-full text-center">{{ img.name }}</p>
+                            {# Exibe o nome da imagem abaixo, cortando se for longo #}
+                        </div>
+                        {% endfor %}
+                        
+                        {% if images_count > 10 %}
+                        {# Se o usuário enviou mais de 10 imagens, mostra aviso #}
+                        <div class="col-span-full text-orange-600 text-sm mt-2">
+                            Apenas as primeiras 10 imagens serão processadas ({{ images_count }} selecionadas)
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    {# Botões de ação (Analisar e Limpar) #}
+                    <div class="flex justify-center space-x-4">
+                        <form action="{% url 'analises' %}" method="post" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="analisar"
+                                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out flex items-center justify-center">
+                                <i class="fas fa-paper-plane mr-2"></i> Enviar para Análise
+                            </button>
+                            {# Botão para enviar as imagens ao sistema de análise #}
+                        </form>
+                        
+                        <form action="{% url 'analises' %}" method="post" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="limpar_preview"
+                                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out flex items-center justify-center">
+                                <i class="fas fa-xmark mr-2"></i> Remover Imagens
+                            </button>
+                            {# Botão para limpar as imagens selecionadas #}
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# ---------------------------------------------------------------- #}
+    {# RESULTADOS DA ANÁLISE #}
+    {# ---------------------------------------------------------------- #}
+    {% if resultados_analise %}
+        {# Se houver resultados da análise, exibe os cards com as informações #}
+        <div class="bg-white rounded-xl shadow-md p-6 mt-8 card">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Resultados das Análises</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {# Grade responsiva para mostrar os resultados #}
+                {% for resultado in resultados_analise %}
+                {# Loop que percorre cada resultado de imagem analisada #}
+                <div class="border border-gray-200 rounded-lg p-4 flex flex-col items-center text-center">
+                    
+                    <div class="w-full h-32 flex items-center justify-center mb-3 border border-gray-200 rounded-md p-1">
+                        <img src="{{ resultado.url }}" alt="{{ resultado.nome_arquivo }}" 
+                             class="max-w-full max-h-full object-contain">
+                        {# Exibe a imagem analisada dentro de uma moldura #}
+                    </div>
+
+                    <p class="font-semibold text-gray-800 truncate w-full px-2">{{ resultado.nome_arquivo }}</p>
+                    {# Nome do arquivo da imagem #}
+
+                    <p class="text-2xl font-bold 
+                        {% if resultado.cor_card == 'blue' %}text-blue-600
+                        {% elif resultado.cor_card == 'green' %}text-green-600
+                        {% else %}text-yellow-600{% endif %} mt-1">
+                        {{ resultado.detectado }}
+                    </p>
+                    {# Mostra o resultado (detectado/não detectado), colorido conforme status #}
+
+                    <p class="text-lg text-gray-600">{{ resultado.confianca }}% de confiança</p>
+                    {# Mostra a porcentagem de confiança do modelo na detecção #}
+                </div>
+                {% endfor %}
+            </div>
+
+            {# Botão para limpar todos os resultados exibidos #}
+            <form method="post" class="mt-6 text-center">
+                {% csrf_token %}
+                <button type="submit" name="limpar_tudo" 
+                        class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out">
+                    <i class="fas fa-trash mr-2"></i> Limpar Todos os Resultados
+                </button>
+            </form>
+        </div>
+    {% endif %}
+
+    {# ---------------------------------------------------------------- #}
+    {# TIPOS DE BACTÉRIA (Informações de referência) #}
+    {# ---------------------------------------------------------------- #}
+    {% if bacterias %}
+        {# Se houver dados sobre tipos de bactérias, exibe a lista com descrições #}
+        <div class="bg-white rounded-xl shadow-md p-6 mt-8 card">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Tipos de Parasitas</h2>
+            
+            <div class="space-y-4">
+                {% for bacteria in bacterias %}
+                {# Loop para exibir cada tipo de bactéria com suas informações #}
+                <div class="p-4 rounded-lg" 
+                     style="background-color: {{ bacteria.bg_color }}; border-left: 5px solid {{ bacteria.color_code }};">
+                    {# Card colorido de acordo com o tipo de bactéria #}
+                    <h3 class="text-lg font-bold" style="color: {{ bacteria.color_code }};">{{ bacteria.nome }}</h3>
+                    {# Nome da bactéria com cor específica #}
+                    <p class="text-sm text-gray-700 mt-1">{{ bacteria.descricao }}</p>
+                    {# Descrição detalhada da bactéria #}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+</div>
+
+<style>
+.hidden {
+    display: none;
+}
+{# Classe CSS para esconder elementos (caso seja usada no JS) #}
+</style>
+
+{% endblock %}
+{# Fim do bloco de conteúdo #}
