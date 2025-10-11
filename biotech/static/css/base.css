@@ -1077,3 +1077,37 @@ button:focus,
     flex-direction: row;
   }
 }
+
+/* Adicionar ao final do seu arquivo base.css (output do Tailwind) */
+
+/*
+    Ajustes para o Sidebar
+*/
+.sidebar {
+    background-color: rgb(29 78 216); /* blue-700 mais escuro, se não usar o gradiente */
+}
+
+/* Classe para o link ativo na Sidebar 
+    (Imita o estilo de botão pressionado/selecionado)
+*/
+.active-link button {
+    background-color: rgb(59 130 246); /* blue-500 */
+    color: white;
+    /* Adiciona sombra sutil para efeito de profundidade */
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+}
+
+.active-link button:hover {
+    background-color: rgb(37 99 235); /* blue-600 */
+}
+
+/*
+    Ajuste para o Card de Parasita na Análise (se não for inline)
+*/
+.parasite-card {
+    /* As outras propriedades já estavam no seu CSS, garanto que o padding e borda estão corretos */
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    border-left-width: 4px;
+}

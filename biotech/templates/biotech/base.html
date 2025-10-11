@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Biotech{% endblock %}</title>
+
+    {# Font Awesome #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    {# CSS base #}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+</head>
+<body class="flex h-screen bg-gray-100">
+
+    {# ==================== SIDEBAR ==================== #}
+    <div class="sidebar w-64 text-white flex flex-col bg-blue-700 shadow-xl">
+
+        {# Cabeçalho da sidebar #}
+        <div class="p-6 text-center border-b border-blue-600">
+            <h1 class="text-2xl font-bold tracking-wider">BIOTECH</h1>
+        </div>
+
+        {# Conteúdo principal da sidebar #}
+        <div class="flex-1 p-4">
+
+            {# Introdução / Informações #}
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold mb-4 text-blue-200">Sistema de Análise</h2>
+                <p class="text-sm text-blue-300 mb-4">
+                   Plataforma especializada em detecção de bactérias através de análise de imagens.
+                </p>
+            </div>
+
+            {# Navegação #}
+            <div class="mb-8">
+                <nav class="space-y-2">
+                    {% url 'analises' as analises_url %}
+                    <a href="{{ analises_url }}" class="block">
+                        <button class="w-full text-left py-2 px-4 rounded-lg transition duration-150 ease-in-out font-medium
+                            {% if request.path == analises_url or request.resolver_match.url_name == 'analises' %}
+                                active-link
+                            {% else %}
+                                hover:bg-blue-600 text-blue-100
+                            {% endif %}">
+                            <i class="fas fa-magnifying-glass mr-3"></i> Análises
+                        </button>
+                    </a>
+
+                    {% url 'dashboard' as dashboard_url %}
+                    <a href="{{ dashboard_url }}" class="block">
+                        <button class="w-full text-left py-2 px-4 rounded-lg transition duration-150 ease-in-out font-medium
+                            {% if request.path == dashboard_url or request.resolver_match.url_name == 'dashboard' %}
+                                active-link
+                            {% else %}
+                                hover:bg-blue-600 text-blue-100
+                            {% endif %}">
+                            <i class="fas fa-chart-line mr-3"></i> Dashboard
+                        </button>
+                    </a>
+
+                    <a href="#" class="block">
+                        <button class="w-full text-left py-2 px-4 hover:bg-blue-600 rounded-lg font-medium text-blue-100 transition duration-150 ease-in-out">
+                            <i class="fas fa-info-circle mr-3"></i> Sobre Nós
+                        </button>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        {# Rodapé da sidebar #}
+        <div class="p-4 text-center text-sm text-blue-300 border-t border-blue-600">
+            &copy; 2025 Biotech
+        </div>
+    </div>
+
+    {# ==================== CONTEÚDO PRINCIPAL ==================== #}
+    <div class="main-content flex-1 overflow-y-auto p-8">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

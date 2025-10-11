@@ -1,0 +1,89 @@
+{% extends 'biotech/base.html' %} <!-- Usa o template base como estrutura principal (com sidebar, cabeçalho etc.) -->
+{% load static %} 
+
+{% block content %} <!-- Início do bloco que insere o conteúdo específico desta página no template base -->
+
+    <!-- Título principal do dashboard -->
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">Dashboard de Análise</h1>
+    
+    <!-- Cria um layout em grid:
+         - No celular: 1 coluna
+         - Em telas grandes (lg): 2 colunas
+         - gap-8 adiciona espaçamento entre os cards -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        <!-- ===== CARD 1: GRÁFICO DE BARRAS MENSAL ===== -->
+        <div class="bg-white rounded-xl shadow-lg p-6"> <!-- Cria um card com fundo branco, cantos arredondados e sombra -->
+            
+            <!-- Título do card -->
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">
+                Análise de Gráfico Mensal
+            </h2>
+            
+            <!-- Área onde o gráfico será exibido -->
+            <div class="h-80 flex justify-center items-center">
+                {% if grafico_barra_base64 %} <!-- Verifica se o backend enviou o gráfico codificado em base64 -->
+                    <img src="data:image/png;base64,{{ grafico_barra_base64 }}" 
+                         alt="Análise de Gráfico Mensal" 
+                         class="max-h-full w-full object-contain"> <!-- Exibe o gráfico como imagem responsiva -->
+                {% else %}
+                    <p class="text-gray-500">Gráfico de barras não disponível.</p> <!-- Mensagem se o gráfico não existir -->
+                {% endif %}
+            </div>
+            
+            <!-- Texto explicativo abaixo do gráfico -->
+            <p class="text-sm text-gray-500 mt-4 text-center">
+                Este gráfico mostra as análises feitas mensalmente.
+            </p>
+        </div> <!-- Fim do CARD 1 -->
+
+        <!-- ===== CARD 2: GRÁFICO DE PIZZA ===== -->
+        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+            <!-- Estrutura semelhante ao primeiro card -->
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">
+                Parasitas Mais Comuns
+            </h2>
+            
+            <!-- Área flexível que ajusta o layout:
+                 - Coluna no celular (flex-col)
+                 - Linha no desktop (lg:flex-row)
+                 - Centraliza os itens e adiciona espaçamento -->
+            <div class="flex flex-col lg:flex-row items-center justify-center space-x-0 lg:space-x-8 w-full">
+                
+                <!-- Subdivisão do gráfico de pizza -->
+                <div class="w-full lg:w-1/2 flex justify-center h-64 lg:h-80">
+                    {% if grafico_pizza_base64 %} <!-- Verifica se há gráfico gerado -->
+                        <img src="data:image/png;base64,{{ grafico_pizza_base64 }}" 
+                             alt="Parasitas Mais Comuns" 
+                             class="max-h-full w-full object-contain"> <!-- Exibe o gráfico de pizza -->
+                    {% else %}
+                        <p class="text-gray-500">Gráfico de pizza não disponível.</p> <!-- Caso não haja gráfico -->
+                    {% endif %}
+                </div>
+                
+                <!-- Legenda ao lado do gráfico (em telas grandes) -->
+                <div class="mt-6 lg:mt-0 space-y-2 text-sm text-gray-700">
+                    <!-- Cada linha contém uma cor e o nome do parasita correspondente -->
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 rounded-full mr-2 bg-blue-500"></span> <!-- Bolinha azul -->
+                        <span>Giardia lamblia</span> <!-- Nome do parasita -->
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 rounded-full mr-2 bg-green-500"></span> <!-- Bolinha verde -->
+                        <span>Entamoeba histolytica</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 rounded-full mr-2 bg-red-500"></span> <!-- Bolinha vermelha -->
+                        <span>Ascaris lumbricoides</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Texto explicativo abaixo do gráfico -->
+            <p class="text-sm text-gray-500 mt-4 text-center">
+                Este gráfico mostra os parasitas mais comuns encontrados nas amostras analisadas.
+            </p>
+        </div> <!-- Fim do CARD 2 -->
+        
+    </div> <!-- Fim do grid principal -->
+{% endblock content %} <!-- Final do bloco de conteúdo específico -->
