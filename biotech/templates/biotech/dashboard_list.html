@@ -1,89 +1,93 @@
-{% extends 'biotech/base.html' %} <!-- Usa o template base como estrutura principal (com sidebar, cabeçalho etc.) -->
-{% load static %} 
+{% extends 'biotech/base.html' %}
+{% load static %}
 
-{% block content %} <!-- Início do bloco que insere o conteúdo específico desta página no template base -->
-
-    <!-- Título principal do dashboard -->
+{% block content %}
     <h1 class="text-3xl font-bold text-gray-800 mb-8">Dashboard de Análise</h1>
     
-    <!-- Cria um layout em grid:
-         - No celular: 1 coluna
-         - Em telas grandes (lg): 2 colunas
-         - gap-8 adiciona espaçamento entre os cards -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-        <!-- ===== CARD 1: GRÁFICO DE BARRAS MENSAL ===== -->
-        <div class="bg-white rounded-xl shadow-lg p-6"> <!-- Cria um card com fundo branco, cantos arredondados e sombra -->
-            
-            <!-- Título do card -->
-            <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">
-                Análise de Gráfico Mensal
-            </h2>
-            
-            <!-- Área onde o gráfico será exibido -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">Análise Mensal</h2>
             <div class="h-80 flex justify-center items-center">
-                {% if grafico_barra_base64 %} <!-- Verifica se o backend enviou o gráfico codificado em base64 -->
-                    <img src="data:image/png;base64,{{ grafico_barra_base64 }}" 
-                         alt="Análise de Gráfico Mensal" 
-                         class="max-h-full w-full object-contain"> <!-- Exibe o gráfico como imagem responsiva -->
+                {% if grafico_barra_base64 %}
+                    <img src="data:image/png;base64,{{ grafico_barra_base64 }}" class="max-h-full w-full object-contain">
                 {% else %}
-                    <p class="text-gray-500">Gráfico de barras não disponível.</p> <!-- Mensagem se o gráfico não existir -->
+                    <p class="text-gray-500">Gráfico de barras não disponível.</p>
                 {% endif %}
             </div>
-            
-            <!-- Texto explicativo abaixo do gráfico -->
-            <p class="text-sm text-gray-500 mt-4 text-center">
-                Este gráfico mostra as análises feitas mensalmente.
-            </p>
-        </div> <!-- Fim do CARD 1 -->
+        </div>
 
-        <!-- ===== CARD 2: GRÁFICO DE PIZZA ===== -->
-        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center">
-            <!-- Estrutura semelhante ao primeiro card -->
-            <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">
-                Parasitas Mais Comuns
-            </h2>
-            
-            <!-- Área flexível que ajusta o layout:
-                 - Coluna no celular (flex-col)
-                 - Linha no desktop (lg:flex-row)
-                 - Centraliza os itens e adiciona espaçamento -->
-            <div class="flex flex-col lg:flex-row items-center justify-center space-x-0 lg:space-x-8 w-full">
-                
-                <!-- Subdivisão do gráfico de pizza -->
-                <div class="w-full lg:w-1/2 flex justify-center h-64 lg:h-80">
-                    {% if grafico_pizza_base64 %} <!-- Verifica se há gráfico gerado -->
-                        <img src="data:image/png;base64,{{ grafico_pizza_base64 }}" 
-                             alt="Parasitas Mais Comuns" 
-                             class="max-h-full w-full object-contain"> <!-- Exibe o gráfico de pizza -->
-                    {% else %}
-                        <p class="text-gray-500">Gráfico de pizza não disponível.</p> <!-- Caso não haja gráfico -->
-                    {% endif %}
-                </div>
-                
-                <!-- Legenda ao lado do gráfico (em telas grandes) -->
-                <div class="mt-6 lg:mt-0 space-y-2 text-sm text-gray-700">
-                    <!-- Cada linha contém uma cor e o nome do parasita correspondente -->
-                    <div class="flex items-center">
-                        <span class="w-3 h-3 rounded-full mr-2 bg-blue-500"></span> <!-- Bolinha azul -->
-                        <span>Giardia lamblia</span> <!-- Nome do parasita -->
-                    </div>
-                    <div class="flex items-center">
-                        <span class="w-3 h-3 rounded-full mr-2 bg-green-500"></span> <!-- Bolinha verde -->
-                        <span>Entamoeba histolytica</span>
-                    </div>
-                    <div class="flex items-center">
-                        <span class="w-3 h-3 rounded-full mr-2 bg-red-500"></span> <!-- Bolinha vermelha -->
-                        <span>Ascaris lumbricoides</span>
-                    </div>
-                </div>
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">Parasitas Comuns</h2>
+            <div class="h-80 flex justify-center items-center">
+                {% if grafico_pizza_base64 %}
+                    <img src="data:image/png;base64,{{ grafico_pizza_base64 }}" class="max-h-full w-full object-contain">
+                {% else %}
+                    <p class="text-gray-500">Gráfico de pizza não disponível.</p>
+                {% endif %}
             </div>
+        </div>
+    </div>
 
-            <!-- Texto explicativo abaixo do gráfico -->
-            <p class="text-sm text-gray-500 mt-4 text-center">
-                Este gráfico mostra os parasitas mais comuns encontrados nas amostras analisadas.
-            </p>
-        </div> <!-- Fim do CARD 2 -->
-        
-    </div> <!-- Fim do grid principal -->
-{% endblock content %} <!-- Final do bloco de conteúdo específico -->
+    <div class="bg-white p-6 rounded-xl shadow-md mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <form method="GET" class="flex flex-wrap gap-3 items-center">
+            <input type="text" name="parasita" placeholder="Filtrar por nome..." value="{{ request.GET.parasita }}" 
+                   class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
+            
+            <select name="confianca" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                <option value="0">Toda confiança</option>
+                <option value="50" {% if request.GET.confianca == '50' %}selected{% endif %}> > 50%</option>
+                <option value="80" {% if request.GET.confianca == '80' %}selected{% endif %}> > 80%</option>
+            </select>
+            
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">Filtrar</button>
+            <a href="{% url 'dashboard_list' %}" class="text-gray-500 hover:underline">Limpar</a>
+        </form>
+
+        <div class="flex gap-2">
+            <a href="?{{ request.GET.urlencode }}&export=csv" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition">📥 CSV</a>
+            <a href="?{{ request.GET.urlencode }}&export=pdf" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition">📄 PDF</a>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th class="px-6 py-4 text-sm font-semibold text-gray-700">Miniatura</th>
+                    <th class="px-6 py-4 text-sm font-semibold text-gray-700">Data da Análise</th>
+                    <th class="px-6 py-4 text-sm font-semibold text-gray-700">Parasita Detectado</th>
+                    <th class="px-6 py-4 text-sm font-semibold text-gray-700">Confiança</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for item in resultados %}
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4">
+                        {% if item.imagem_resultado %}
+                            <img src="{{ item.imagem_resultado.url }}" class="w-20 h-16 object-cover rounded-md border shadow-sm cursor-pointer" onclick="window.open(this.src)">
+                        {% else %}
+                            <span class="text-gray-400 text-xs italic">Sem imagem</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">{{ item.data_analise|date:"d/m/Y H:i" }}</td>
+                    <td class="px-6 py-4 text-sm font-bold text-gray-800">{{ item.parasita_detectado }}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium 
+                            {% if item.confianca >= 80 %} bg-green-100 text-green-700 
+                            {% elif item.confianca >= 50 %} bg-yellow-100 text-yellow-700 
+                            {% else %} bg-gray-100 text-gray-700 {% endif %}">
+                            {{ item.confianca }}%
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="px-6 py-10 text-center text-gray-500 italic">
+                        Nenhum registro encontrado para os filtros aplicados.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

@@ -48,10 +48,10 @@
                         </button>
                     </a>
 
-                    {% url 'dashboard' as dashboard_url %}
+                    {% url 'dashboard_list' as dashboard_url %}
                     <a href="{{ dashboard_url }}" class="block">
                         <button class="w-full text-left py-2 px-4 rounded-lg transition duration-150 ease-in-out font-medium
-                            {% if request.path == dashboard_url or request.resolver_match.url_name == 'dashboard' %}
+                            {% if request.path == dashboard_url or request.resolver_match.url_name == 'dashboard_list' %}
                                 active-link
                             {% else %}
                                 hover:bg-blue-600 text-blue-100
