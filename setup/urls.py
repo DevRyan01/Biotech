@@ -1,31 +1,28 @@
-# urls.py
-
 from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-# Importe as funções de view diretamente. Assumimos que 'views' se refere ao seu arquivo views.py
+# Importamos as views diretamente do seu app 'biotech'
 from biotech import views 
 
-
-
 urlpatterns = [
+    # 1. Painel Administrativo do Django
     path('admin/', admin.site.urls),
     
-    # 1. Rota principal: usa a função 'analises' para a página de upload/resultados
+    # 2. Página Principal (Upload e Análise em tempo real)
+    # No views.py: return redirect('analises')
     path('', views.analises, name='analises'), 
     
-    # 2. Rota para o Dashboard: usa o nome 'dashboard' (como em base.html)
-    path('dashboard/', views.dashboard_list, name='dashboard'),
-    
-    # NOTA: A rota 'analises/<int:analise_id>/' foi removida,
-    # pois a lógica de upload/visualização foi consolidada na rota raiz '/'
-
+    # 3. Dashboard e Relatórios (Lista de resultados salvos no banco)
+    # No views.py: return redirect('dashboard_list')
+    path('dashboard/', views.dashboard_list, name='dashboard_list'),
 ]
 
-# ... (configurações DEBUG/static/media)
+# --- CONFIGURAÇÃO DE ARQUIVOS DE MÍDIA E ESTÁTICOS ---
+# Isso permite que o Django exiba as imagens que a IA salvou durante o desenvolvimento
 if settings.DEBUG:
-    # Garante que arquivos de mídia (uploads) e estáticos (css, js) sejam servidos em desenvolvimento
+    # Serve arquivos de upload (fotos dos parasitas e resultados)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    # Certifique-se de que STATIC_ROOT está configurado no settings.py se usar este bloco
+    
+    # Serve arquivos estáticos (CSS, JavaScript, Imagens do sistema)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

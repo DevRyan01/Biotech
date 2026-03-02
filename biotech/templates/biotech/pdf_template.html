@@ -1,0 +1,37 @@
+<html>
+<head>
+    <style>
+        body { font-family: sans-serif; }
+        .header { text-align: center; color: #2c3e50; border-bottom: 2px solid #eee; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relatório de Análises Parasitológicas</h1>
+        <p>Biotech AI - Sistema de Identificação</p>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Parasita</th>
+                <th>Confiança</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in analises %}
+            <tr>
+                <td>{{ item.data_analise|date:"d/m/Y H:i" }}</td>
+                <td>{{ item.parasita_detectado }}</td>
+                <td>{{ item.confianca }}%</td>
+                <td>Confirmado</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
