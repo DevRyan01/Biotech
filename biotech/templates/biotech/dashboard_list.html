@@ -1,0 +1,93 @@
+{% extends 'biotech/base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">Dashboard de Análise</h1>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">Análise Mensal</h2>
+            <div class="h-80 flex justify-center items-center">
+                {% if grafico_barra_base64 %}
+                    <img src="data:image/png;base64,{{ grafico_barra_base64 }}" class="max-h-full w-full object-contain">
+                {% else %}
+                    <p class="text-gray-500">Gráfico de barras não disponível.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">Parasitas Comuns</h2>
+            <div class="h-80 flex justify-center items-center">
+                {% if grafico_pizza_base64 %}
+                    <img src="data:image/png;base64,{{ grafico_pizza_base64 }}" class="max-h-full w-full object-contain">
+                {% else %}
+                    <p class="text-gray-500">Gráfico de pizza não disponível.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-md mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <form method="GET" class="flex flex-wrap gap-3 items-center">
+            <input type="text" name="parasita" placeholder="Filtrar por nome..." value="{{ request.GET.parasita }}" 
+                   class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
+            
+            <select name="confianca" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                <option value="0">Toda confiança</option>
+                <option value="50" {% if request.GET.confianca == '50' %}selected{% endif %}> > 50%</option>
+                <option value="80" {% if request.GET.confianca == '80' %}selected{% endif %}> > 80%</option>
+            </select>
+            
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">Filtrar</button>
+            <a href="{% url 'dashboard_list' %}" class="text-gray-500 hover:underline">Limpar</a>
+        </form>
+
+        <div class="flex gap-2">
+            <a href="?{{ request.GET.urlencode }}&export=csv" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition">📥 CSV</a>
+            <a href="?{{ request.GET.urlencode }}&export=pdf" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition">📄 PDF</a>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th class="px-6 py-4 text-sm font-semibold text-gray-700">Miniatura</th>
+                    <th class="px-6 py-4 text-sm font-semibold text-gray-700">Data da Análise</th>
+                    <th class="px-6 py-4 text-sm font-semibold text-gray-700">Parasita Detectado</th>
+                    <th class="px-6 py-4 text-sm font-semibold text-gray-700">Confiança</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for item in resultados %}
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4">
+                        {% if item.imagem_resultado %}
+                            <img src="{{ item.imagem_resultado.url }}" class="w-20 h-16 object-cover rounded-md border shadow-sm cursor-pointer" onclick="window.open(this.src)">
+                        {% else %}
+                            <span class="text-gray-400 text-xs italic">Sem imagem</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">{{ item.data_analise|date:"d/m/Y H:i" }}</td>
+                    <td class="px-6 py-4 text-sm font-bold text-gray-800">{{ item.parasita_detectado }}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium 
+                            {% if item.confianca >= 80 %} bg-green-100 text-green-700 
+                            {% elif item.confianca >= 50 %} bg-yellow-100 text-yellow-700 
+                            {% else %} bg-gray-100 text-gray-700 {% endif %}">
+                            {{ item.confianca }}%
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="px-6 py-10 text-center text-gray-500 italic">
+                        Nenhum registro encontrado para os filtros aplicados.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

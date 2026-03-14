@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Componentes customizados */
+@layer components {
+
+    /* Sidebar */
+    .sidebar {
+        @apply bg-gradient-to-b from-blue-900 to-blue-500;
+    }
+    
+    /* Regra de Hover para BOTÕES (Adicionada para manter a funcionalidade anterior) */
+    button:hover {
+        @apply -translate-y-px; /* Equivalente a transform: translateY(-1px); */
+    }
+
+    /* Main content */
+    .main-content {
+        @apply bg-gray-100;
+    }
+    /* Card */
+    .card {
+        @apply transition-transform duration-300;
+    }
+    .card:hover {
+        @apply -translate-y-1;
+    }
+
+    /* Upload area */
+    .upload-area {
+        @apply border-2 border-dashed border-blue-500 p-6 rounded-lg cursor-pointer transition-all duration-300;
+    }
+    .upload-area:hover {
+        @apply bg-blue-100 border-blue-900;
+    }
+
+    /* Parasite card */
+    .parasite-card {
+        @apply border-l-4 p-4 rounded-lg mb-4;
+    }
+
+    /* Botão remover */
+    .btn-remove {
+        @apply transition-transform duration-300;
+    }
+    .btn-remove:hover {
+        @apply scale-105;
+    }
+
+    /* Spinner de loading */
+    .loading-spinner {
+        @apply rounded-full w-12 h-12 border-4 border-gray-200 border-t-blue-500 animate-spin;
+    }
+
+    /* Mensagens de status */
+    .status-success {
+        @apply bg-green-100 text-green-700 p-4 rounded-lg;
+    }
+    .status-error {
+        @apply bg-red-100 text-red-700 p-4 rounded-lg;
+    }
+    .status-info {
+        @apply bg-blue-100 text-blue-700 p-4 rounded-lg;
+    }
+
+    /* Imagens */
+    img {
+        @apply max-w-full h-auto object-contain;
+    }
+
+    /* Focus */
+    button:focus,
+    input:focus {
+        @apply outline-2 outline-blue-500 outline-offset-2;
+    }
+
+    /* Animations fadeIn */
+    .fade-in {
+        @apply animate-fadeIn;
+    }
+
+}
+
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+    .flex-col-mobile {
+        @apply flex flex-col;
+    }
+    .sidebar-mobile {
+        @apply w-full h-auto;
+    }
+    .main-content-mobile {
+        @apply ml-0 p-4;
+    }
+    .grid-mobile {
+        @apply grid grid-cols-1;
+    }
+    .space-x-3 > * {
+        @apply mb-2;
+    }
+}
