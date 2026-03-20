@@ -3,8 +3,5 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-   # path('',views.get_paciente, name= 'get_all_pacientes'),
-    path('',views.paciente_manager)
-
-    
+   path('',views.paciente_manager) 
 ]
